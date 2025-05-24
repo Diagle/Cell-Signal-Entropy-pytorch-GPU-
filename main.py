@@ -1,10 +1,12 @@
 import os
+from matplotlib.backend_tools import SaveFigureBase
 import scanpy as sc
+from zmq import device
 from entropy import *
 from preprocessing import *
 from typing import Optional,Union,Any,Set,List,Tuple,Dict
 
-def main(work_path,h5ad_path:str='None',net_path:str='None',device:str='GPU'):
+def run_main(work_path,h5ad_path:str='None',net_path:str='None',device:str='GPU',save_path:str=None):
     '''
     输入工作目录，单细胞h5ad路径，网络路径，方法与设备
     返回结果存储在result.csv中
@@ -13,8 +15,11 @@ def main(work_path,h5ad_path:str='None',net_path:str='None',device:str='GPU'):
     work_space = work_path
     h5ad_path = h5ad_path
     net_path = net_path
-    method = method
     device = device
+    save_path = save_path
+
+    if not torch.cuda.is_available():
+        print('GPU cuda is not available, it is running on the CPU!')
 
     os.chdir(work_space)
 
@@ -62,13 +67,18 @@ def main(work_path,h5ad_path:str='None',net_path:str='None',device:str='GPU'):
     label['Max_Sr'] = [Max_Sr]*len(data2)
 
     # 保存结果
-    label.to_csv('./result.csv')
-    print(f'successly run \nresult is saved in {work_path}./result.csv')
+    label.to_csv(save_path + 'result.csv')
+    print(f'run successly! \nresult is saved in {work_path}./result.csv')
 
     return 0
 
 
 if __name__ == '__main__':
-    work_space = WorkSpace = '/mnt/e/data'
+    work_space = '/mnt/e/data'
     h5ad_path = './网络熵/singlecell/GSE200981/filter_data.h5ad'
     net_path = './PIN/STRING/string.csv'
+    device = 'GPU'
+    run_main(work_space,h5ad_path,net_path,device)
+
+else:
+    print('main load successly!')

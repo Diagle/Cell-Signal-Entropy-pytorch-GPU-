@@ -80,4 +80,4 @@ if __name__ =='__main__':
     gene_id_transform(gene_list)
 
 else:
-    print('加载成功')
+    print('preprocessing.py load successfully')

@@ -1,12 +1,5 @@
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import anndata as ad
-import seaborn as sns
-import igraph as ig
-import sys
-sys.path.append('/home/kazundo/WorkSpace/')
-from MyModule import MyPreprocession
 from typing import Optional,Union,Any,Set,List,Tuple,Dict
 import torch
 
@@ -93,4 +86,4 @@ if __name__ == '__main__':
     propretion_df.apply(lambda x:get_cell_entroph(x,max_sub_net)/caculate_MaxSr(max_sub_net),axis=1)
 
 else:
-    print('ok!,1,2,3,let`s jam!')
+    print('entropy.py load successfully')
