@@ -75,18 +75,6 @@ def extract_max_sub_nodes(net:pd.DataFrame)->List:
     select_v = g.connected_components().giant().vs['genes']
     return select_v
 
-def get_Sr(df,net,method=None):
-    df1 = MyPreprocession.normal_hvgs(df,method,0)
-    max_sub_nodes = extract_max_sub_nodes(net)
-    max_sub_net= net.loc[max_sub_nodes,max_sub_nodes]
-    df2 =  df1.loc[:,max_sub_nodes]
-    Max_Sr = caculate_MaxSr(max_sub_net)
-    result = df2.apply(lambda x:get_cell_entroph(x,max_sub_net)/Max_Sr,axis=1)
-    return result
-
-
-
-
 if __name__ == '__main__':
     np.random.seed(114514)
     test_df = pd.DataFrame(np.random.randint(0,20,(100,5)))
