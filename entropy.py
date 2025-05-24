@@ -28,9 +28,9 @@ def caculate_Prob_exp(x:torch.tensor,net:torch.tensor)->torch.tensor:
 
 def caculate_MaxSr(adjust_matrix:pd.DataFrame,device='GPU')->float:
     with torch.no_grad():
-        net = adjust_matrix.to_numpy(dtype=float)
+        net = torch.tensor(adjust_matrix.values,dtype=torch.float)
         if device == 'GPU' and torch.cuda.is_available():
-            net = torch.from_numpy(net).cuda()
+            net = net.cuda()
     
         eigenvalue, featurevector = torch.linalg.eig(net)
         Max_Sr = torch.log2(torch.max(torch.real(eigenvalue)))
