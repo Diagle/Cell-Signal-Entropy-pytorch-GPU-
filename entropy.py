@@ -71,11 +71,8 @@ def pij_RelationIndex(x):
 def extract_max_sub_nodes(net:pd.DataFrame)->List:
     import igraph as ig
     g = ig.Graph.Adjacency(np.array(net),mode="undirected")
-    print(ig.summary(g))
-
     g.vs['genes'] = list(net.columns)
     select_v = g.connected_components().giant().vs['genes']
-    print(len(select_v))
     return select_v
 
 def get_Sr(df,net,method=None):

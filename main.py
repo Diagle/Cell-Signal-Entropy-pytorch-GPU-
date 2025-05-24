@@ -6,7 +6,7 @@ from preprocessing import *
 
 work_space = WorkSpace = '/mnt/e/data'
 h5ad_path = './网络熵/singlecell/GSE200981/filter_data.h5ad'
-net_path = './PIN/STRING/STRING_0.7_homo.csv'
+net_path = './PIN/STRING/string.csv'
 
 os.chdir(work_space)
 
