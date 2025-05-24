@@ -1,7 +1,8 @@
 import os
 from matplotlib.backend_tools import SaveFigureBase
 import scanpy as sc
-from zmq import device
+import sys
+sys.path.append('/home/jinyuanxu/WorkSpace/hugang/entropy/Cell-Signal-Entropy-pytorch-GPU-')
 from entropy import *
 from preprocessing import *
 from typing import Optional,Union,Any,Set,List,Tuple,Dict
@@ -68,17 +69,18 @@ def run_main(work_path,h5ad_path:str='None',net_path:str='None',device:str='GPU'
 
     # 保存结果
     label.to_csv(save_path + 'result.csv')
-    print(f'run successly! \nresult is saved in {work_path}./result.csv')
+    print(f'run successly! \nresult is saved in {work_path}/result.csv')
 
     return 0
 
 
 if __name__ == '__main__':
-    work_space = '/mnt/e/data'
-    h5ad_path = './网络熵/singlecell/GSE200981/filter_data.h5ad'
-    net_path = './PIN/STRING/string.csv'
+
+    work_space = '/home/jinyuanxu/WorkSpace/hugang/entropy'
+    h5ad_path = './GSE114687/MCF10A/filter_data.h5ad'
+    net_path = './string.csv'
     device = 'GPU'
-    run_main(work_space,h5ad_path,net_path,device)
+    run_main(work_space,h5ad_path,net_path,device,save_path='string-')
 
 else:
     print('main load successly!')
