@@ -55,11 +55,8 @@ def get_cell_entroph(df:pd.DataFrame,adjust_matrix:pd.DataFrame,device='GPU')->f
         x = torch.tensor(df.values, dtype=torch.float, )
         net = torch.tensor(adjust_matrix.values, dtype=torch.float)
     weight = caculate_Prob_exp(x,net)
-    print('pij finished')
     PI = caculate_Prob_inv(x,net)
-    print('pi finished')
     Sr = caculate_entroph_sum(weight,PI,net)
-    print('entropy finished')
     del net, x
     torch.cuda.empty_cache()
     return Sr
