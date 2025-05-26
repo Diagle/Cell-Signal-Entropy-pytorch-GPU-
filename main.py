@@ -7,35 +7,27 @@ from entropy import *
 from preprocessing import *
 from typing import Optional,Union,Any,Set,List,Tuple,Dict
 
-def run_main(work_path,h5ad_path:str='None',net_path:str='None',device:str='GPU',save_path:str=None):
+def run_main(df=pd.DataFrame,net=pd.DataFrame,device:str='GPU'):
     '''
-    输入工作目录，单细胞h5ad路径，网络路径，方法与设备
+    输入存储目录,单细胞h5ad,ppi网络邻接矩阵,方法与设备
     返回结果存储在result.csv中
 
     '''
-    work_space = work_path
-    h5ad_path = h5ad_path
-    net_path = net_path
+    data = df
+    net = net
     device = device
-    save_path = save_path
 
     if not torch.cuda.is_available():
         print('GPU cuda is not available, it is running on the CPU!')
 
-    os.chdir(work_space)
-
-    # 读取转录谱
-    adata = sc.read_h5ad(h5ad_path)
-    data = adata.to_df()
-    label = adata.obs
+    # 矩阵处理
     genes = list(data.columns)
     samples = list(data.index)
 
     print(f'RNA data has {len(samples)} cells and {len(genes)} genes')
 
 
-    #读取互作网络
-    net = pd.read_csv(net_path,index_col=0)
+    # 互作网络处理
     net[net>1] = 1
     print(f'net has {len(net)} nodes and {np.sum(net.values)} edges')
 
@@ -63,24 +55,33 @@ def run_main(work_path,h5ad_path:str='None',net_path:str='None',device:str='GPU'
     for i in track(data2.index, description="Processing..."):
         entrophy_list.append(get_cell_entroph(data2.loc[i],max_sub_net,device)/Max_Sr)
 
-
-    label['Sr'] = entrophy_list
-    label['Max_Sr'] = [Max_Sr]*len(data2)
-
-    # 保存结果
-    label.to_csv(save_path + 'result.csv')
-    print(f'run successly! \nresult is saved in {work_path}/result.csv')
-
-    return 0
+    return entrophy_list
 
 
 if __name__ == '__main__':
 
-    work_space = '/home/jinyuanxu/WorkSpace/hugang/entropy'
-    h5ad_path = './GSE114687/MCF10A/filter_data.h5ad'
-    net_path = './string.csv'
+    work_space = '/home/jinyuanxu/WorkSpace/hugang/entropy/GSE114687/MCF10A/'
+    os.chdir(work_space)
+
+    h5ad_path = './filter_data.h5ad'
+    adata = sc.read_h5ad(h5ad_path)
+    print('adata load')
+    data = adata.to_df()
+    label = adata.obs
+
+
+    # 读取网络
+    nets = {
+        'net_string700': pd.read_csv('../../STRING_0.7_homo.csv',index_col=0),
+        'net_string' : pd.read_csv('../../string.csv',index_col=0),
+        'net17' : pd.read_csv('../../net17.csv' ,index_col=0),
+        'net19' : pd.read_csv('../../net19.csv',index_col=0),}
     device = 'GPU'
-    run_main(work_space,h5ad_path,net_path,device,save_path='string-')
+
+    for i in nets.keys():
+        label[i] = run_main(data,nets[i],device)
+    label.to_csv('./result.csv')
 
 else:
     print('main load successly!')
+
